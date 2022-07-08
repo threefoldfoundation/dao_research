@@ -74,6 +74,16 @@
 <p>get dao pool</p>
 
 </section>
+						<section id="Account" class="doc-node">
+							<div class="title"><h2>struct Account <a href="#Account">#</a></h2></div><pre class="signature"><code><span class="token keyword">struct</span> <span class="token symbol">Account</span> <span class="token punctuation">{</span>
+<span class="token keyword">pub</span> <span class="token keyword">mut</span><span class="token punctuation">:</span>
+	name       <span class="token builtin">string</span>
+	address    <span class="token builtin">string</span>   <span class="token comment">// as used on blockchain, is the public key</span>
+	currencies <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span> <span class="token comment">// just to have pointer to currencies as used on account, easier to find liquidity pools</span>
+<span class="token punctuation">}</span></code></pre>
+<p>is the account on the blockchain</p>
+
+</section>
 						<section id="BuyOrderInfo" class="doc-node">
 							<div class="title"><h2>struct BuyOrderInfo <a href="#BuyOrderInfo">#</a></h2></div><pre class="signature"><code><span class="token keyword">struct</span> <span class="token symbol">BuyOrderInfo</span> <span class="token punctuation">{</span>
 <span class="token keyword">pub</span> <span class="token keyword">mut</span><span class="token punctuation">:</span>
@@ -99,9 +109,13 @@
 <p>is the top struct holds everything of the DAO liquidity pool is just the start</p>
 
 </section>
-						<section id="DAO.account_get" class="doc-node">
-							<div class="title"><h2>fn (DAO) account_get <a href="#DAO.account_get">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> dao DAO<span class="token punctuation">)</span> <span class="token function">account_get</span><span class="token punctuation">(</span>address <span class="token builtin">string</span><span class="token punctuation">,</span> name <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">?</span><span class="token operator">&</span>Account</code></pre>
-<p>make sure account exists in the dao</p>
+						<section id="DAO.wallet_withdraw" class="doc-node">
+							<div class="title"><h2>fn (DAO) wallet_withdraw <a href="#DAO.wallet_withdraw">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> dao DAO<span class="token punctuation">)</span> <span class="token function">wallet_withdraw</span><span class="token punctuation">(</span>args FundingArgs<span class="token punctuation">)</span> <span class="token operator">?</span><span class="token operator">&</span>LPWallet</code></pre>
+<p>withdraw money from your wallet and end back to your personal account where the money came from important for now we only support sending money back to blockchain account who put the money in</p>
+<pre><code class="language-args">    currency string
+    account &amp;Account
+    amount f64
+</code></pre>
 
 </section>
 						<section id="DAO.buy" class="doc-node">
@@ -109,19 +123,24 @@
 <p>this allows a user to buy a chose currency e.g. dao.buy(buy(currency:&quot;tft&quot;, account:kristof, amount:1000)? 		this means kristof is buying 1000 tft, this needs to come from his personal account, if not there will fail account is Account object</p>
 
 </section>
-						<section id="DAO.fund" class="doc-node">
-							<div class="title"><h2>fn (DAO) fund <a href="#DAO.fund">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> dao DAO<span class="token punctuation">)</span> <span class="token function">fund</span><span class="token punctuation">(</span>args PositionArgs<span class="token punctuation">)</span> <span class="token operator">?</span><span class="token operator">&</span>LPWallet</code></pre>
+						<section id="DAO.pool_deposit" class="doc-node">
+							<div class="title"><h2>fn (DAO) pool_deposit <a href="#DAO.pool_deposit">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> dao DAO<span class="token punctuation">)</span> <span class="token function">pool_deposit</span><span class="token punctuation">(</span>args FundingArgs<span class="token punctuation">)</span> <span class="token operator">?</span><span class="token operator">&</span>LPWallet</code></pre>
 <p>add money to the dao poolfor a user</p>
 
 </section>
-						<section id="DAO.liquiditypool_get" class="doc-node">
-							<div class="title"><h2>fn (DAO) liquiditypool_get <a href="#DAO.liquiditypool_get">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> t DAO<span class="token punctuation">)</span> <span class="token function">liquiditypool_get</span><span class="token punctuation">(</span>currency <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">?</span><span class="token operator">&</span>Pool</code></pre>
+						<section id="DAO.pool_get" class="doc-node">
+							<div class="title"><h2>fn (DAO) pool_get <a href="#DAO.pool_get">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> t DAO<span class="token punctuation">)</span> <span class="token function">pool_get</span><span class="token punctuation">(</span>currency <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">?</span><span class="token operator">&</span>Pool</code></pre>
 
 
 </section>
-						<section id="DAO.liquiditypool_set" class="doc-node">
-							<div class="title"><h2>fn (DAO) liquiditypool_set <a href="#DAO.liquiditypool_set">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> t DAO<span class="token punctuation">)</span> <span class="token function">liquiditypool_set</span><span class="token punctuation">(</span>arg LPParams<span class="token punctuation">)</span> <span class="token operator">?</span><span class="token operator">&</span>Pool</code></pre>
+						<section id="DAO.pool_set" class="doc-node">
+							<div class="title"><h2>fn (DAO) pool_set <a href="#DAO.pool_set">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> t DAO<span class="token punctuation">)</span> <span class="token function">pool_set</span><span class="token punctuation">(</span>arg LPParams<span class="token punctuation">)</span> <span class="token operator">?</span><span class="token operator">&</span>Pool</code></pre>
 <p>set dao pool</p>
+
+</section>
+						<section id="DAO.pool_withdraw" class="doc-node">
+							<div class="title"><h2>fn (DAO) pool_withdraw <a href="#DAO.pool_withdraw">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> dao DAO<span class="token punctuation">)</span> <span class="token function">pool_withdraw</span><span class="token punctuation">(</span>args FundingArgs<span class="token punctuation">)</span> <span class="token operator">?</span><span class="token operator">&</span>LPWallet</code></pre>
+<p>get money out of pool towards your treasury wallet</p>
 
 </section>
 						<section id="DAO.time_add_seconds" class="doc-node">
@@ -134,14 +153,27 @@
 <p>set the a time, important to be able to simulate  &quot;YYYY-MM-DD HH:mm:ss&quot; format</p>
 
 </section>
-						<section id="LPOrderArg" class="doc-node">
-							<div class="title"><h2>struct LPOrderArg <a href="#LPOrderArg">#</a></h2></div><pre class="signature"><code><span class="token keyword">struct</span> <span class="token symbol">LPOrderArg</span> <span class="token punctuation">{</span>
-<span class="token keyword">pub</span> <span class="token keyword">mut</span><span class="token punctuation">:</span>
-	currency <span class="token builtin">string</span>
-	account  <span class="token operator">&</span>Account <span class="token comment">// person who is doing the order</span>
-	amount   <span class="token builtin">f64</span>      <span class="token comment">// amount of the currency we will buy e.g. tft</span>
-<span class="token punctuation">}</span></code></pre>
-<p>arguments for doing an order (can be buy or sell)</p>
+						<section id="DAO.wallet_deposit" class="doc-node">
+							<div class="title"><h2>fn (DAO) wallet_deposit <a href="#DAO.wallet_deposit">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> dao DAO<span class="token punctuation">)</span> <span class="token function">wallet_deposit</span><span class="token punctuation">(</span>args FundingArgs<span class="token punctuation">)</span> <span class="token operator">?</span><span class="token operator">&</span>LPWallet</code></pre>
+<p>send money to your personal wallet on the DAO treasury this money you can freely been redraw from here you can bring the money to the DAO Pool but then certain rules are in place</p>
+<pre><code class="language-args">    currency string
+    account &amp;Account
+    amount f64
+</code></pre>
+
+</section>
+						<section id="DAO.wallet_get" class="doc-node">
+							<div class="title"><h2>fn (DAO) wallet_get <a href="#DAO.wallet_get">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> dao DAO<span class="token punctuation">)</span> <span class="token function">wallet_get</span><span class="token punctuation">(</span>args WalletArgs<span class="token punctuation">)</span> <span class="token operator">?</span><span class="token operator">&</span>LPWallet</code></pre>
+<p>get wallet information, is from your wallet on the DAO Treasory args</p>
+<ul>
+<li>currency string</li>
+<li>account &amp;Account</li>
+</ul>
+
+</section>
+						<section id="DAO.account_get" class="doc-node">
+							<div class="title"><h2>fn (DAO) account_get <a href="#DAO.account_get">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> dao DAO<span class="token punctuation">)</span> <span class="token function">account_get</span><span class="token punctuation">(</span>address <span class="token builtin">string</span><span class="token punctuation">,</span> name <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">?</span><span class="token operator">&</span>Account</code></pre>
+<p>make sure account exists in the dao</p>
 
 </section>
 						<section id="LPParams" class="doc-node">
@@ -164,7 +196,7 @@
 	poolpercentage <span class="token builtin">f64</span> <span class="token comment">// expressed in 0-100 as float</span>
 	modified       <span class="token builtin">bool</span> <span class="token operator">=</span> <span class="token boolean">true</span>
 <span class="token punctuation">}</span></code></pre>
-<p>asset = money stored in liqduitity pool, is owned by an account</p>
+<p>asset = money stored in liqduitity pool, is owned by an account is like your private wallet on top of your treasury</p>
 
 </section>
 						<section id="Pool" class="doc-node">
@@ -176,66 +208,59 @@
 	usdprice_sell <span class="token builtin">f64</span>       <span class="token comment">// what value do we sell the currency in usd</span>
 	modtime       time<span class="token punctuation">.</span>Time <span class="token comment">// timestamp of last calculation</span>
 
-	positions_pool <span class="token builtin">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">&</span>LPWallet <span class="token comment">// money kept for an account in pool, they key is the public key of account</span>
-	positions      <span class="token builtin">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">&</span>LPWallet <span class="token comment">// money kept for an account, not in pool, they key is the public key of account</span>
+	wallets_pool    <span class="token builtin">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">&</span>LPWallet <span class="token comment">// money kept for an account in pool, they key is the public key of account</span>
+	wallets_private <span class="token builtin">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">&</span>LPWallet <span class="token comment">// money kept for an account, not in pool, they key is the public key of account</span>
 <span class="token punctuation">}</span></code></pre>
 <p>dao pools are done per currency they group money on behalf of users in the DAO</p>
 
 </section>
 						<section id="Pool.buy_info" class="doc-node">
-							<div class="title"><h2>fn (Pool) buy_info <a href="#Pool.buy_info">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> lp Pool<span class="token punctuation">)</span> <span class="token function">buy_info</span><span class="token punctuation">(</span>args LPOrderArg<span class="token punctuation">)</span> <span class="token operator">?</span>BuyOrderInfo</code></pre>
-
+							<div class="title"><h2>fn (Pool) buy_info <a href="#Pool.buy_info">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> lp Pool<span class="token punctuation">)</span> <span class="token function">buy_info</span><span class="token punctuation">(</span>args FundingArgs<span class="token punctuation">)</span> <span class="token operator">?</span>BuyOrderInfo</code></pre>
+<p>simulate a buy order and return info as follows:</p>
+<pre><code>pub struct BuyOrderInfo {
+    currency       string
+    tokenprice_usd f64
+    orderprice_usd f64
+    usd_before     f64
+    usd_after      f64
+    tokens_before  f64
+    tokens_after   f64
+}
+</code></pre>
 
 </section>
 						<section id="Pool.calculate" class="doc-node">
 							<div class="title"><h2>fn (Pool) calculate <a href="#Pool.calculate">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> lp Pool<span class="token punctuation">)</span> <span class="token function">calculate</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">?</span></code></pre>
-<p>will recalculate of all positions</p>
-
-</section>
-						<section id="Account" class="doc-node">
-							<div class="title"><h2>struct Account <a href="#Account">#</a></h2></div><pre class="signature"><code><span class="token keyword">struct</span> <span class="token symbol">Account</span> <span class="token punctuation">{</span>
-<span class="token keyword">pub</span> <span class="token keyword">mut</span><span class="token punctuation">:</span>
-	name       <span class="token builtin">string</span>
-	address    <span class="token builtin">string</span>   <span class="token comment">// as used on blockchain, is the public key</span>
-	currencies <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span> <span class="token comment">// just to have pointer to currencies as used on account, easier to find liquidity pools</span>
-<span class="token punctuation">}</span></code></pre>
-<p>is the account on the blockchain</p>
-
-</section>
-						<section id="PositionArgs" class="doc-node">
-							<div class="title"><h2>struct PositionArgs <a href="#PositionArgs">#</a></h2></div><pre class="signature"><code><span class="token keyword">struct</span> <span class="token symbol">PositionArgs</span> <span class="token punctuation">{</span>
-<span class="token keyword">pub</span> <span class="token keyword">mut</span><span class="token punctuation">:</span>
-	currency <span class="token builtin">string</span>
-	account  <span class="token operator">&</span>Account <span class="token comment">// person who owns the asset</span>
-	amount   <span class="token builtin">f64</span>
-	inpool   <span class="token builtin">bool</span> <span class="token comment">// if in pool it means that the money will be made available to pool to work with</span>
-<span class="token punctuation">}</span></code></pre>
-
+<p>will recalculate of all wallets</p>
 
 </section>
 
           <div class="footer">
-            Powered by vdoc. Generated on: 8 Jul 2022 17:10:07
+            Powered by vdoc. Generated on: 8 Jul 2022 17:50:04
           </div>
         </div>
         <div class="doc-toc"><ul><li class="open"><a href="#readme_dao">README</a></li>
 <li class="open"><a href="#get">fn get</a>        <ul>
 </ul>
 </li>
+<li class="open"><a href="#Account">struct Account</a>        <ul>
+</ul>
+</li>
 <li class="open"><a href="#BuyOrderInfo">struct BuyOrderInfo</a>        <ul>
 </ul>
 </li>
 <li class="open"><a href="#DAO">struct DAO</a>        <ul>
-<li><a href="#DAO.account_get">fn account_get</a></li>
+<li><a href="#DAO.wallet_withdraw">fn wallet_withdraw</a></li>
 <li><a href="#DAO.buy">fn buy</a></li>
-<li><a href="#DAO.fund">fn fund</a></li>
-<li><a href="#DAO.liquiditypool_get">fn liquiditypool_get</a></li>
-<li><a href="#DAO.liquiditypool_set">fn liquiditypool_set</a></li>
+<li><a href="#DAO.pool_deposit">fn pool_deposit</a></li>
+<li><a href="#DAO.pool_get">fn pool_get</a></li>
+<li><a href="#DAO.pool_set">fn pool_set</a></li>
+<li><a href="#DAO.pool_withdraw">fn pool_withdraw</a></li>
 <li><a href="#DAO.time_add_seconds">fn time_add_seconds</a></li>
 <li><a href="#DAO.time_set">fn time_set</a></li>
-</ul>
-</li>
-<li class="open"><a href="#LPOrderArg">struct LPOrderArg</a>        <ul>
+<li><a href="#DAO.wallet_deposit">fn wallet_deposit</a></li>
+<li><a href="#DAO.wallet_get">fn wallet_get</a></li>
+<li><a href="#DAO.account_get">fn account_get</a></li>
 </ul>
 </li>
 <li class="open"><a href="#LPParams">struct LPParams</a>        <ul>
@@ -247,12 +272,6 @@
 <li class="open"><a href="#Pool">struct Pool</a>        <ul>
 <li><a href="#Pool.buy_info">fn buy_info</a></li>
 <li><a href="#Pool.calculate">fn calculate</a></li>
-</ul>
-</li>
-<li class="open"><a href="#Account">struct Account</a>        <ul>
-</ul>
-</li>
-<li class="open"><a href="#PositionArgs">struct PositionArgs</a>        <ul>
 </ul>
 </li>
 </ul></div>

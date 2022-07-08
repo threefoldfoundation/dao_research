@@ -14,8 +14,8 @@ pub mut:
 	usdprice_sell f64       // what value do we sell the currency in usd
 	modtime       time.Time // timestamp of last calculation
 
-	positions_pool map[string]&LPWallet // money kept for an account in pool, they key is the public key of account
-	positions      map[string]&LPWallet // money kept for an account, not in pool, they key is the public key of account
+	wallets_pool    map[string]&LPWallet // money kept for an account in pool, they key is the public key of account
+	wallets_private map[string]&LPWallet // money kept for an account, not in pool, they key is the public key of account
 }
 
 // parameters relevant to a liquidity pool
@@ -27,7 +27,7 @@ pub mut:
 }
 
 // set dao pool
-pub fn (mut t DAO) liquiditypool_set(arg LPParams) ?&Pool {
+pub fn (mut t DAO) pool_set(arg LPParams) ?&Pool {
 	if texttools.name_fix_no_underscore(arg.currency).to_lower() != arg.currency {
 		return error('can specify currency only in lowercase and no special chars, e.g. tft, usdc, ... is ok')
 	}
@@ -56,59 +56,65 @@ pub fn (mut t DAO) liquiditypool_set(arg LPParams) ?&Pool {
 	return t.pools[arg.currency]
 }
 
-pub fn (mut t DAO) liquiditypool_get(currency string) ?&Pool {
+pub fn (mut t DAO) pool_get(currency string) ?&Pool {
 	if currency in t.pools {
 		return t.pools[currency]
 	}
 	return error('Cannot find liquidity pool for currency $currency')
 }
 
-// will recalculate of all positions
+// will recalculate of all wallets
 pub fn (mut lp Pool) calculate() ? {
 	mut tot := 0.0
-	for key, p in lp.positions_pool {
+	for key, p in lp.wallets_pool {
 		tot += p.amount
 	}
-	for key, mut p in lp.positions_pool {
+	for key, mut p in lp.wallets_pool {
 		if tot > 0 {
 			p.poolpercentage = p.amount / tot
 		}
 	}
 }
 
-// add money to the dao poolfor a user
-pub fn (mut dao DAO) fund(args PositionArgs) ?&LPWallet {
-	mut lp := dao.liquiditypool_get(args.currency)?
-	mut lpusd := dao.liquiditypool_get('usdc')?
+struct PoolsWalletResult {
+pub mut:
+	poolusd &Pool
+	poolcur &Pool
+	wallet  &LPWallet
+}
 
-	mut p := LPWallet{
-		account: args.account
-	}
-	if args.inpool {
-		if args.account.address in lp.positions_pool {
-			p = lp.positions_pool[args.account.address]
-		} else {
-			lp.positions_pool[args.account.address] = &p
-		}
-	} else {
-		if args.account.address in lp.positions {
-			p = lp.positions[args.account.address]
-		} else {
-			lp.positions[args.account.address] = &p
-		}
-	}
-
-	p.modified = true
-	p.amount += args.amount
-	p.amount_funded += args.amount
-	p.modtime = dao.time_current
+// internal function to return right pools & wallet
+// returns
+//	poolusd &Pool
+// 	poolcur &Pool
+// 	wallet &LPWallet
+fn (mut dao DAO) pools_wallet_get(account &Account, currency string, ispool bool) ?PoolsWalletResult {
+	mut lp := dao.pool_get(currency)?
+	mut lpusd := dao.pool_get('usdc')?
 
 	lp.calculate()? // calculates how much percent each user has in the liquidity pool
+	lpusd.calculate()? // calculates how much percent each user has in the liquidity pool
 
-	// check if person has also usdc account, if not need to create
-	if args.account.address !in lpusd.positions_pool {
-		dao.fund(currency: 'usdc', account: args.account, amount: 0, inpool: true)?
+	mut p := LPWallet{
+		account: account
+	}
+	if ispool {
+		if account.address in lp.wallets_pool {
+			p = lp.wallets_pool[account.address]
+		} else {
+			lp.wallets_pool[account.address] = &p
+		}
+	} else {
+		if account.address in lp.wallets_pool {
+			p = lp.wallets_private[account.address]
+		} else {
+			lp.wallets_private[account.address] = &p
+		}
 	}
 
-	return &p
+	return PoolsWalletResult{
+		poolusd: lpusd
+		poolcur: lp
+		wallet: &p
+	}
 }

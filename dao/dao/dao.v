@@ -22,7 +22,7 @@ pub fn get(path string) ?DAO {
 		path: path
 	}
 	t.time_current = time.now()
-	t.liquiditypool_set(currency: 'usdc', usdprice_buy: 1, usdprice_sell: 1)?
+	t.pool_set(currency: 'usdc', usdprice_buy: 1, usdprice_sell: 1)?
 	return t
 }
 

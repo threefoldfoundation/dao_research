@@ -2,14 +2,6 @@ module dao
 
 import time
 
-// arguments for doing an order (can be buy or sell)
-pub struct LPOrderArg {
-pub mut:
-	currency string
-	account  &Account // person who is doing the order
-	amount   f64      // amount of the currency we will buy e.g. tft
-}
-
 // returns info about what result of order would be, but does not execute it
 pub struct BuyOrderInfo {
 pub mut:
@@ -22,9 +14,9 @@ pub mut:
 	tokens_after   f64
 }
 
-// simulate a buy order return
+// simulate a buy order and return info as follows:
 // ```
-pub struct BuyOrderInfo {
+// pub struct BuyOrderInfo {
 // 	currency       string
 // 	tokenprice_usd f64
 // 	orderprice_usd f64
@@ -34,9 +26,9 @@ pub struct BuyOrderInfo {
 // 	tokens_after   f64
 // }
 // ```
-pub fn (mut lp Pool) buy_info(args LPOrderArg) ?BuyOrderInfo {
+pub fn (mut lp Pool) buy_info(args FundingArgs) ?BuyOrderInfo {
 	// TODO: we need to do decent check here that buy is possible, is there enough money on the accounts
-	return OrderInfo{
+	return BuyOrderInfo{
 		currency: lp.currency
 		tokenprice_usd: lp.usdprice_buy
 		orderprice_usd: args.amount / lp.usdprice_buy
@@ -49,8 +41,8 @@ pub fn (mut lp Pool) buy_info(args LPOrderArg) ?BuyOrderInfo {
 //		this means kristof is buying 1000 tft, this needs to come from his personal account, if not there will fail
 // account is Account object
 pub fn (mut dao DAO) buy(args LPOrderArg) ?BuyOrderInfo {
-	mut poolusd := dao.liquiditypool_get('usdc')?
-	mut lp := dao.liquiditypool_get(args.currency)?
+	mut poolusd := dao.pool_get('usdc')?
+	mut lp := dao.pool_get(args.currency)?
 
 	poolusd.calculate()?
 	lp.calculate()?
@@ -62,13 +54,13 @@ pub fn (mut dao DAO) buy(args LPOrderArg) ?BuyOrderInfo {
 	currencyreceive := args.amount // documentation purpose, is the currency the user is buying & amount
 
 	// this should always be there, because has been initialized that way
-	mut buyer_private_account_usd := poolusd.positions[args.account.address]
+	mut buyer_private_account_usd := poolusd.wallets[args.account.address]
 	buyer_private_account_usd.amount -= usdneeded
 
-	for key, mut p in lp.positions_pool {
+	for key, mut p in lp.wallets_pool {
 		// TODO: need to do a check in advance that its possible maybe not enough money
-		p.amount -= currencyreceive / p.poolpercentage // deduct the bought currency in percentage from all account positions
-		mut posusd := poolusd.positions_pool[key] // add the usd coming in to all the usd accounts in same percentage
+		p.amount -= currencyreceive / p.poolpercentage // deduct the bought currency in percentage from all account wallets
+		mut posusd := poolusd.wallets_pool[key] // add the usd coming in to all the usd accounts in same percentage
 		posusd.amount += usdneeded / p.poolpercentage
 	}
 

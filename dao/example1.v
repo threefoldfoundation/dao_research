@@ -9,7 +9,7 @@ fn simulate() ? {
 	dao.time_set("2022-07-05 10:10:04")?
 
 	//need to define the basic price, in reality this can only be done by the council and needs consensus
-	dao.liquiditypool_set(currency:"tft",usdprice_buy:0.05,usdprice_sell:0.1)?
+	dao.pool_set(currency:"tft",usdprice_buy:0.05,usdprice_sell:0.1)?
 
 	//add public key 
 	// mut pk := libsodium.PrivateKey{
@@ -20,8 +20,8 @@ fn simulate() ? {
 
 	mut kristof := dao.account_get("aabbccddeeff","kristof")?
 
-	mut lp_tft := dao.liquiditypool_get("tft")?
-	mut lp_usd := dao.liquiditypool_get("usdc")?
+	mut lp_tft := dao.pool_get("tft")?
+	mut lp_usd := dao.pool_get("usdc")?
 
 	dao.fund(currency:"tft", account:kristof, amount:99, inpool:true)?
 	dao.fund(currency:"usdc", account:kristof,amount:1000,inpool:true)?
