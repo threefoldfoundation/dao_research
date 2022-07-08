@@ -8,7 +8,6 @@ pub struct Account {
 pub mut:
 	name       string
 	address    string   // as used on blockchain, is the public key
-	usdvalue   int      // reference how much value build
 	currencies []string // just to have pointer to currencies as used on account, easier to find liquidity pools
 }
 

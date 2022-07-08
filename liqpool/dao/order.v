@@ -47,8 +47,8 @@ pub fn (mut dao DAO) buy(args LPOrderArg) ?OrderInfo {
 	currencyreceive := args.amount // documentation purpose, is the currency the user is buying & amount
 
 	// this should always be there, because has been initialized that way
-	mut buyer_posusd := poolusd.positions_pool[args.account.address]
-	buyer_posusd.amount -= currencyreceive
+	mut buyer_private_account_usd := poolusd.positions[args.account.address]
+	buyer_private_account_usd.amount -= usdneeded
 
 	for key, mut p in lp.positions_pool {
 		// TODO: need to do a check in advance that its possible maybe not enough money

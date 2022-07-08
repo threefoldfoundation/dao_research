@@ -12,10 +12,10 @@ fn simulate() ? {
 	dao.liquiditypool_set(currency:"tft",usdprice_buy:0.05,usdprice_sell:0.1)?
 
 	//add public key 
-	mut pk := libsodium.PrivateKey{
-		public_key: []u8{len: libsodium.public_key_size}
-		secret_key: []u8{len: libsodium.secret_key_size}
-	}
+	// mut pk := libsodium.PrivateKey{
+	// 	public_key: []u8{len: libsodium.public_key_size}
+	// 	secret_key: []u8{len: libsodium.secret_key_size}
+	// }
 	// println(pk)
 
 	mut kristof := dao.account_get("aabbccddeeff","kristof")?
@@ -23,7 +23,7 @@ fn simulate() ? {
 	mut lp_tft := dao.liquiditypool_get("tft")?
 	mut lp_usd := dao.liquiditypool_get("usdc")?
 
-	dao.fund(currency:"tft", account:kristof,amount:99,inpool:true)?
+	dao.fund(currency:"tft", account:kristof, amount:99, inpool:true)?
 	dao.fund(currency:"usdc", account:kristof,amount:1000,inpool:true)?
 	
 	//put private cash in, can always set & get back without any limits
