@@ -22,6 +22,18 @@ pub mut:
 	tokens_after   f64
 }
 
+// simulate a buy order return
+// ```
+pub struct BuyOrderInfo {
+// 	currency       string
+// 	tokenprice_usd f64
+// 	orderprice_usd f64
+// 	usd_before     f64
+// 	usd_after      f64
+// 	tokens_before  f64
+// 	tokens_after   f64
+// }
+// ```
 pub fn (mut lp Pool) buy_info(args LPOrderArg) ?BuyOrderInfo {
 	// TODO: we need to do decent check here that buy is possible, is there enough money on the accounts
 	return OrderInfo{
