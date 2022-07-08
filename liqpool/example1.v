@@ -1,31 +1,45 @@
 module main
-import liquidity
+import dao
+import libsodium
 
 fn simulate() ? {
 
-	mut lp := liquidity.get("/tmp/lp")?
+	mut dao := dao.get("/tmp/dao")?
 
-	lp.time_set("2022-07-05 10:10:04")?
+	dao.time_set("2022-07-05 10:10:04")?
 
 	//need to define the basic price, in reality this can only be done by the council and needs consensus
-	lp.asset_set(assettype:"tft",usdprice_buy:0.05,usdprice_sell:0.1)?
+	dao.liquiditypool_set(currency:"tft",usdprice_buy:0.05,usdprice_sell:0.1)?
 
+	//add public key 
+	mut pk := libsodium.PrivateKey{
+		public_key: []u8{len: libsodium.public_key_size}
+		secret_key: []u8{len: libsodium.secret_key_size}
+	}
+	// println(pk)
 
-	mut kristof := lp.account_add("kristof","aabbccddeeff")?
-	lp.fund(kristof,"tft",99)?
-	lp.fund(kristof,"usdc",10)?
-	lp.fund(kristof,.gold,1)?
+	mut kristof := dao.account_get("aabbccddeeff","kristof")?
 
-	mut timur := lp.account_add("timur","aabbccddeedd")?
-	lp.fund(timur,"tft",1199)?
+	mut lp_tft := dao.liquiditypool_get("tft")?
+	mut lp_usd := dao.liquiditypool_get("usdc")?
 
-	lp.order(account:kristof, ordertype:.buy, assettype:"tft", amount:10)?
-	lp.order(account:kristof, ordertype:.sell, assettype:"tft", amount:5)?
+	dao.fund(currency:"tft", account:kristof,amount:99,inpool:true)?
+	dao.fund(currency:"usdc", account:kristof,amount:1000,inpool:true)?
+	
+	//put private cash in, can always set & get back without any limits
+	//private cash is needed otherwise transactions cannot happen
+	dao.fund(currency:"usdc", account:kristof,amount:10000,inpool:false)?
 
-	lp.time_add_seconds(1) //is in seconds
-	lp.buy(account:timur,sell:"tft", get:"usdc",amount:10)?
+	dao.time_add_seconds(1) //is in seconds
 
-	println(lp)
+	mut timur := dao.account_get("aabbccddeedd","timur")?
+	
+	dao.fund(currency:"usdc", account:timur,amount:775,inpool:true)?
+
+	//we always buy from usd account
+	dao.buy(currency:"tft", account:kristof, amount:1000)?  //this means kristof is buying 1000 tft, this needs to come from his personal account, if not there will fail
+
+	println(dao)
 	
 
 }

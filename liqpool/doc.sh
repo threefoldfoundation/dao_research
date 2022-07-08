@@ -1,4 +1,4 @@
-v fmt -w liquidity
+v fmt -w dao
 v doc -f html -m . -readme
 
 rm -rf docs
