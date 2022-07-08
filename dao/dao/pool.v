@@ -18,7 +18,7 @@ pub mut:
 	positions      map[string]&LPWallet // money kept for an account, not in pool, they key is the public key of account
 }
 
-//parameters relevant to a liquidity pool
+// parameters relevant to a liquidity pool
 pub struct LPParams {
 pub mut:
 	currency      string // e.g. usdc, tft, ...
