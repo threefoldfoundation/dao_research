@@ -4,7 +4,7 @@ import time
 
 // asset = money stored in liqduitity pool, is owned by an account
 [heap]
-pub struct Position {
+pub struct LPWallet {
 pub mut:
 	account        &Account // pointer to account who owns position
 	amount         f64

@@ -4,6 +4,7 @@ import time
 import freeflowuniverse.crystallib.texttools
 
 // dao pools are done per currency
+// they group money on behalf of users in the DAO
 [heap]
 pub struct Pool {
 pub mut:
@@ -13,11 +14,12 @@ pub mut:
 	usdprice_sell f64       // what value do we sell the currency in usd
 	modtime       time.Time // timestamp of last calculation
 
-	positions_pool map[string]&Position // money kept for an account in pool, they key is the public key of account
-	positions      map[string]&Position // money kept for an account, not in pool, they key is the public key of account
+	positions_pool map[string]&LPWallet // money kept for an account in pool, they key is the public key of account
+	positions      map[string]&LPWallet // money kept for an account, not in pool, they key is the public key of account
 }
 
-pub struct AssetPairArg {
+//parameters relevant to a liquidity pool
+pub struct LPParams {
 pub mut:
 	currency      string // e.g. usdc, tft, ...
 	usdprice_buy  f64
@@ -25,7 +27,7 @@ pub mut:
 }
 
 // set dao pool
-pub fn (mut t DAO) liquiditypool_set(arg AssetPairArg) ?&Pool {
+pub fn (mut t DAO) liquiditypool_set(arg LPParams) ?&Pool {
 	if texttools.name_fix_no_underscore(arg.currency).to_lower() != arg.currency {
 		return error('can specify currency only in lowercase and no special chars, e.g. tft, usdc, ... is ok')
 	}
@@ -75,11 +77,11 @@ pub fn (mut lp Pool) calculate() ? {
 }
 
 // add money to the dao poolfor a user
-pub fn (mut dao DAO) fund(args PositionArgs) ?&Position {
+pub fn (mut dao DAO) fund(args PositionArgs) ?&LPWallet {
 	mut lp := dao.liquiditypool_get(args.currency)?
 	mut lpusd := dao.liquiditypool_get('usdc')?
 
-	mut p := Position{
+	mut p := LPWallet{
 		account: args.account
 	}
 	if args.inpool {
