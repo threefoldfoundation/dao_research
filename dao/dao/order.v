@@ -11,7 +11,7 @@ pub mut:
 }
 
 // returns info about what result of order would be, but does not execute it
-pub struct OrderInfo {
+pub struct BuyOrderInfo {
 pub mut:
 	currency       string
 	tokenprice_usd f64
@@ -22,7 +22,7 @@ pub mut:
 	tokens_after   f64
 }
 
-pub fn (mut lp Pool) buy_info(args LPOrderArg) ?OrderInfo {
+pub fn (mut lp Pool) buy_info(args LPOrderArg) ?BuyOrderInfo {
 	// TODO: we need to do decent check here that buy is possible, is there enough money on the accounts
 	return OrderInfo{
 		currency: lp.currency
@@ -32,8 +32,11 @@ pub fn (mut lp Pool) buy_info(args LPOrderArg) ?OrderInfo {
 	// TODO: need to fill in before & after
 }
 
-// add money to the dao pool for a user
-pub fn (mut dao DAO) buy(args LPOrderArg) ?OrderInfo {
+// this allows a user to buy a chose currency
+// e.g. dao.buy(buy(currency:"tft", account:kristof, amount:1000)?
+//		this means kristof is buying 1000 tft, this needs to come from his personal account, if not there will fail
+// account is Account object
+pub fn (mut dao DAO) buy(args LPOrderArg) ?BuyOrderInfo {
 	mut poolusd := dao.liquiditypool_get('usdc')?
 	mut lp := dao.liquiditypool_get(args.currency)?
 

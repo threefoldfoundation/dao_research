@@ -74,6 +74,20 @@
 <p>get dao pool</p>
 
 </section>
+						<section id="BuyOrderInfo" class="doc-node">
+							<div class="title"><h2>struct BuyOrderInfo <a href="#BuyOrderInfo">#</a></h2></div><pre class="signature"><code><span class="token keyword">struct</span> <span class="token symbol">BuyOrderInfo</span> <span class="token punctuation">{</span>
+<span class="token keyword">pub</span> <span class="token keyword">mut</span><span class="token punctuation">:</span>
+	currency       <span class="token builtin">string</span>
+	tokenprice_usd <span class="token builtin">f64</span>
+	orderprice_usd <span class="token builtin">f64</span>
+	usd_before     <span class="token builtin">f64</span>
+	usd_after      <span class="token builtin">f64</span>
+	tokens_before  <span class="token builtin">f64</span>
+	tokens_after   <span class="token builtin">f64</span>
+<span class="token punctuation">}</span></code></pre>
+<p>returns info about what result of order would be, but does not execute it</p>
+
+</section>
 						<section id="DAO" class="doc-node">
 							<div class="title"><h2>struct DAO <a href="#DAO">#</a></h2></div><pre class="signature"><code><span class="token keyword">struct</span> <span class="token symbol">DAO</span> <span class="token punctuation">{</span>
 <span class="token keyword">pub</span> <span class="token keyword">mut</span><span class="token punctuation">:</span>
@@ -91,8 +105,8 @@
 
 </section>
 						<section id="DAO.buy" class="doc-node">
-							<div class="title"><h2>fn (DAO) buy <a href="#DAO.buy">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> dao DAO<span class="token punctuation">)</span> <span class="token function">buy</span><span class="token punctuation">(</span>args LPOrderArg<span class="token punctuation">)</span> <span class="token operator">?</span>OrderInfo</code></pre>
-<p>add money to the dao pool for a user</p>
+							<div class="title"><h2>fn (DAO) buy <a href="#DAO.buy">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> dao DAO<span class="token punctuation">)</span> <span class="token function">buy</span><span class="token punctuation">(</span>args LPOrderArg<span class="token punctuation">)</span> <span class="token operator">?</span>BuyOrderInfo</code></pre>
+<p>this allows a user to buy a chose currency e.g. dao.buy(buy(currency:&quot;tft&quot;, account:kristof, amount:1000)? 		this means kristof is buying 1000 tft, this needs to come from his personal account, if not there will fail account is Account object</p>
 
 </section>
 						<section id="DAO.fund" class="doc-node">
@@ -153,20 +167,6 @@
 <p>asset = money stored in liqduitity pool, is owned by an account</p>
 
 </section>
-						<section id="OrderInfo" class="doc-node">
-							<div class="title"><h2>struct OrderInfo <a href="#OrderInfo">#</a></h2></div><pre class="signature"><code><span class="token keyword">struct</span> <span class="token symbol">OrderInfo</span> <span class="token punctuation">{</span>
-<span class="token keyword">pub</span> <span class="token keyword">mut</span><span class="token punctuation">:</span>
-	currency       <span class="token builtin">string</span>
-	tokenprice_usd <span class="token builtin">f64</span>
-	orderprice_usd <span class="token builtin">f64</span>
-	usd_before     <span class="token builtin">f64</span>
-	usd_after      <span class="token builtin">f64</span>
-	tokens_before  <span class="token builtin">f64</span>
-	tokens_after   <span class="token builtin">f64</span>
-<span class="token punctuation">}</span></code></pre>
-<p>returns info about what result of order would be, but does not execute it</p>
-
-</section>
 						<section id="Pool" class="doc-node">
 							<div class="title"><h2>struct Pool <a href="#Pool">#</a></h2></div><pre class="signature"><code><span class="token keyword">struct</span> <span class="token symbol">Pool</span> <span class="token punctuation">{</span>
 <span class="token keyword">pub</span> <span class="token keyword">mut</span><span class="token punctuation">:</span>
@@ -183,7 +183,7 @@
 
 </section>
 						<section id="Pool.buy_info" class="doc-node">
-							<div class="title"><h2>fn (Pool) buy_info <a href="#Pool.buy_info">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> lp Pool<span class="token punctuation">)</span> <span class="token function">buy_info</span><span class="token punctuation">(</span>args LPOrderArg<span class="token punctuation">)</span> <span class="token operator">?</span>OrderInfo</code></pre>
+							<div class="title"><h2>fn (Pool) buy_info <a href="#Pool.buy_info">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> lp Pool<span class="token punctuation">)</span> <span class="token function">buy_info</span><span class="token punctuation">(</span>args LPOrderArg<span class="token punctuation">)</span> <span class="token operator">?</span>BuyOrderInfo</code></pre>
 
 
 </section>
@@ -215,11 +215,14 @@
 </section>
 
           <div class="footer">
-            Powered by vdoc. Generated on: 8 Jul 2022 17:04:41
+            Powered by vdoc. Generated on: 8 Jul 2022 17:10:07
           </div>
         </div>
         <div class="doc-toc"><ul><li class="open"><a href="#readme_dao">README</a></li>
 <li class="open"><a href="#get">fn get</a>        <ul>
+</ul>
+</li>
+<li class="open"><a href="#BuyOrderInfo">struct BuyOrderInfo</a>        <ul>
 </ul>
 </li>
 <li class="open"><a href="#DAO">struct DAO</a>        <ul>
@@ -239,9 +242,6 @@
 </ul>
 </li>
 <li class="open"><a href="#LPWallet">struct LPWallet</a>        <ul>
-</ul>
-</li>
-<li class="open"><a href="#OrderInfo">struct OrderInfo</a>        <ul>
 </ul>
 </li>
 <li class="open"><a href="#Pool">struct Pool</a>        <ul>
