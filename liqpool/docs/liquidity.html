@@ -73,43 +73,111 @@
 
 
 </section>
-						<section id="LPAccount" class="doc-node">
-							<div class="title"><h2>struct LPAccount <a href="#LPAccount">#</a></h2></div><pre class="signature"><code><span class="token keyword">struct</span> <span class="token symbol">LPAccount</span> <span class="token punctuation">{</span>
-<span class="token keyword">pub</span> <span class="token keyword">mut</span><span class="token punctuation">:</span>
+						<section id="LPAccountArgGet" class="doc-node">
+							<div class="title"><h2>struct LPAccountArgGet <a href="#LPAccountArgGet">#</a></h2></div><pre class="signature"><code><span class="token keyword">struct</span> <span class="token symbol">LPAccountArgGet</span> <span class="token punctuation">{</span>
+<span class="token keyword">pub</span><span class="token punctuation">:</span>
+	id      <span class="token builtin">i64</span>
 	name    <span class="token builtin">string</span>
-	address <span class="token builtin">string</span>
+	address <span class="token builtin">string</span> <span class="token comment">// as used on blockchain</span>
 <span class="token punctuation">}</span></code></pre>
-<p>is the account on the blockchain</p>
-
-</section>
-						<section id="LPAccount.save" class="doc-node">
-							<div class="title"><h2>fn (LPAccount) save <a href="#LPAccount.save">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> account LPAccount<span class="token punctuation">)</span> <span class="token function">save</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">?</span></code></pre>
 
 
 </section>
 						<section id="LPAsset" class="doc-node">
 							<div class="title"><h2>struct LPAsset <a href="#LPAsset">#</a></h2></div><pre class="signature"><code><span class="token keyword">struct</span> <span class="token symbol">LPAsset</span> <span class="token punctuation">{</span>
 <span class="token keyword">pub</span> <span class="token keyword">mut</span><span class="token punctuation">:</span>
-<span class="token comment">// person who owns the asset</span>
-	account   LPAccount
+	id        <span class="token builtin">i64</span>
+	account   LPAccount <span class="token comment">// person who owns the asset</span>
 	assettype AssetType
+	amount    <span class="token builtin">f64</span>
+	timestamp time<span class="token punctuation">.</span>Time
+<span class="token punctuation">}</span></code></pre>
+<p>asset = money stored in liqduitity pool, is owned by an account</p>
+
+</section>
+						<section id="LPOrder" class="doc-node">
+							<div class="title"><h2>struct LPOrder <a href="#LPOrder">#</a></h2></div><pre class="signature"><code><span class="token keyword">struct</span> <span class="token symbol">LPOrder</span> <span class="token punctuation">{</span>
+<span class="token keyword">pub</span> <span class="token keyword">mut</span><span class="token punctuation">:</span>
+	id        <span class="token builtin">i64</span>
+	account   <span class="token builtin">string</span>
+	sell      AssetType
+	get       AssetType
+	amount    <span class="token builtin">f64</span>
+	timestamp time<span class="token punctuation">.</span>Time
 <span class="token punctuation">}</span></code></pre>
 
+
+</section>
+						<section id="LPOrderArg" class="doc-node">
+							<div class="title"><h2>struct LPOrderArg <a href="#LPOrderArg">#</a></h2></div><pre class="signature"><code><span class="token keyword">struct</span> <span class="token symbol">LPOrderArg</span> <span class="token punctuation">{</span>
+<span class="token keyword">pub</span> <span class="token keyword">mut</span><span class="token punctuation">:</span>
+	account LPAccount <span class="token comment">// person who owns the asset</span>
+	sell    AssetType
+	get     AssetType
+	amount  <span class="token builtin">f64</span>
+<span class="token punctuation">}</span></code></pre>
+<p>asset = money stored in liqduitity pool, is owned by an account</p>
 
 </section>
 						<section id="LPPool" class="doc-node">
 							<div class="title"><h2>struct LPPool <a href="#LPPool">#</a></h2></div><pre class="signature"><code><span class="token keyword">struct</span> <span class="token symbol">LPPool</span> <span class="token punctuation">{</span>
 <span class="token keyword">pub</span> <span class="token keyword">mut</span><span class="token punctuation">:</span>
-	assets <span class="token punctuation">[</span><span class="token punctuation">]</span>LPAsset
-<span class="token comment">// location where pool info is being stored</span>
-	path <span class="token builtin">string</span>
+	assets       <span class="token punctuation">[</span><span class="token punctuation">]</span>LPAsset
+	accounts     <span class="token punctuation">[</span><span class="token punctuation">]</span>LPAccount
+	path         <span class="token builtin">string</span> <span class="token comment">// location where pool info is being stored</span>
+	orders       <span class="token punctuation">[</span><span class="token punctuation">]</span>LPOrder
+	time_current time<span class="token punctuation">.</span>Time
+	last_asset   <span class="token builtin">i64</span>
+	last_order   <span class="token builtin">i64</span>
+	last_account <span class="token builtin">i64</span>
 <span class="token punctuation">}</span></code></pre>
 
 
 </section>
+						<section id="LPPool.account_add" class="doc-node">
+							<div class="title"><h2>fn (LPPool) account_add <a href="#LPPool.account_add">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> lp LPPool<span class="token punctuation">)</span> <span class="token function">account_add</span><span class="token punctuation">(</span>name <span class="token builtin">string</span><span class="token punctuation">,</span> address <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">?</span><span class="token operator">&</span>LPAccount</code></pre>
+<p>add money to the liquidity poolfor a user</p>
+
+</section>
+						<section id="LPPool.account_get" class="doc-node">
+							<div class="title"><h2>fn (LPPool) account_get <a href="#LPPool.account_get">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> lp LPPool<span class="token punctuation">)</span> <span class="token function">account_get</span><span class="token punctuation">(</span>arg LPAccountArgGet<span class="token punctuation">)</span> <span class="token operator">?</span><span class="token operator">&</span>LPAccount</code></pre>
+<p>get the account from the liquidity pool can get based on id, name, address</p>
+
+</section>
+						<section id="LPPool.buy" class="doc-node">
+							<div class="title"><h2>fn (LPPool) buy <a href="#LPPool.buy">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> lp LPPool<span class="token punctuation">)</span> <span class="token function">buy</span><span class="token punctuation">(</span>o LPOrderArg<span class="token punctuation">)</span> <span class="token operator">?</span><span class="token builtin">int</span></code></pre>
+<p>add money to the liquidity poolfor a user</p>
+
+</section>
+						<section id="LPPool.fund" class="doc-node">
+							<div class="title"><h2>fn (LPPool) fund <a href="#LPPool.fund">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> lp LPPool<span class="token punctuation">)</span> <span class="token function">fund</span><span class="token punctuation">(</span>account LPAccount<span class="token punctuation">,</span> at AssetType<span class="token punctuation">,</span> amount <span class="token builtin">f64</span><span class="token punctuation">)</span> <span class="token operator">?</span><span class="token operator">&</span>LPAsset</code></pre>
+<p>add money to the liquidity poolfor a user</p>
+
+</section>
+						<section id="LPPool.time_add_seconds" class="doc-node">
+							<div class="title"><h2>fn (LPPool) time_add_seconds <a href="#LPPool.time_add_seconds">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> lp LPPool<span class="token punctuation">)</span> <span class="token function">time_add_seconds</span><span class="token punctuation">(</span>secs <span class="token builtin">int</span><span class="token punctuation">)</span></code></pre>
+
+
+</section>
+						<section id="LPPool.time_set" class="doc-node">
+							<div class="title"><h2>fn (LPPool) time_set <a href="#LPPool.time_set">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> lp LPPool<span class="token punctuation">)</span> <span class="token function">time_set</span><span class="token punctuation">(</span>now <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">?</span></code></pre>
+<p>set the a time, important to be able to simulate  &quot;YYYY-MM-DD HH:mm:ss&quot; format</p>
+
+</section>
+						<section id="LPAccount" class="doc-node">
+							<div class="title"><h2>struct LPAccount <a href="#LPAccount">#</a></h2></div><pre class="signature"><code><span class="token keyword">struct</span> <span class="token symbol">LPAccount</span> <span class="token punctuation">{</span>
+<span class="token keyword">mut</span><span class="token punctuation">:</span>
+	id <span class="token builtin">i64</span>
+<span class="token keyword">pub</span> <span class="token keyword">mut</span><span class="token punctuation">:</span>
+	name    <span class="token builtin">string</span>
+	address <span class="token builtin">string</span> <span class="token comment">// as used on blockchain</span>
+<span class="token punctuation">}</span></code></pre>
+<p>is the account on the blockchain</p>
+
+</section>
 
           <div class="footer">
-            Powered by vdoc. Generated on: 8 Jul 2022 06:02:16
+            Powered by vdoc. Generated on: 8 Jul 2022 08:00:43
           </div>
         </div>
         <div class="doc-toc"><ul><li class="open"><a href="#readme_liquidity">README</a></li>
@@ -119,14 +187,28 @@
 <li class="open"><a href="#AssetType">enum AssetType</a>        <ul>
 </ul>
 </li>
-<li class="open"><a href="#LPAccount">struct LPAccount</a>        <ul>
-<li><a href="#LPAccount.save">fn save</a></li>
+<li class="open"><a href="#LPAccountArgGet">struct LPAccountArgGet</a>        <ul>
 </ul>
 </li>
 <li class="open"><a href="#LPAsset">struct LPAsset</a>        <ul>
 </ul>
 </li>
+<li class="open"><a href="#LPOrder">struct LPOrder</a>        <ul>
+</ul>
+</li>
+<li class="open"><a href="#LPOrderArg">struct LPOrderArg</a>        <ul>
+</ul>
+</li>
 <li class="open"><a href="#LPPool">struct LPPool</a>        <ul>
+<li><a href="#LPPool.account_add">fn account_add</a></li>
+<li><a href="#LPPool.account_get">fn account_get</a></li>
+<li><a href="#LPPool.buy">fn buy</a></li>
+<li><a href="#LPPool.fund">fn fund</a></li>
+<li><a href="#LPPool.time_add_seconds">fn time_add_seconds</a></li>
+<li><a href="#LPPool.time_set">fn time_set</a></li>
+</ul>
+</li>
+<li class="open"><a href="#LPAccount">struct LPAccount</a>        <ul>
 </ul>
 </li>
 </ul></div>
