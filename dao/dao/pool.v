@@ -112,6 +112,10 @@ fn (mut dao DAO) pools_wallet_get(account &Account, currency string, ispool bool
 		}
 	}
 
+	// adjust the modtime
+	lpusd.modtime = dao.time_current
+	lp.modtime = dao.time_current
+
 	return PoolsWalletResult{
 		poolusd: lpusd
 		poolcur: lp
