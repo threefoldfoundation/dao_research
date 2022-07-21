@@ -34,7 +34,7 @@ pub mut:
 // ```
 pub fn (mut dao DAO) trade_info(args PoolTradeArgs) ?TradeInfo {
 	// TODO: we need to do decent check here that buy is possible, is there enough money on the accounts
-	mut r := dao.pools_wallet_get(args.account, args.currency, true)?
+	mut r := dao.pools_wallet_get(args.account, args.currency)?
 
 	return TradeInfo{
 		currency: r.poolcur.currency
@@ -69,31 +69,35 @@ pub struct PoolTradeArgs {
 // 	tokens_before  f64
 // 	tokens_after   f64
 // }
-pub fn (mut dao DAO) pool_trade_buy(args PoolTradeArgs) ?TradeInfo {
+//?TradeInfo {
+pub fn (mut dao DAO) pool_trade_buy(args PoolTradeArgs) ? {
 	// TODO: this code is for sure broken, need to fix
 
-	mut r := dao.pools_wallet_get(args.account, args.currency, true)?
+	mut r := dao.pools_wallet_get(args.account, args.currency)?
+	if args.amount > r.poolcur.curvalue {
+		return error('Not enough money in pool.')
+	}
 
 	// TODO
 	usdneeded := args.amount / r.poolcur.usdprice_buy // money as paid for by the customer, needs to be given to the pool in usd
 	currencyreceive := args.amount // documentation purpose, is the currency the user is buying & amount
 
 	// this should always be there, because has been initialized that way
-	mut buyer_private_account_usd := r.poolusd.wallets[args.account.address]
-	buyer_private_account_usd.amount -= usdneeded
+	mut buyer_twallet := dao.treasury.wallets[args.account.address]
 
-	for key, mut p in r.poolcur.wallets_pool {
-		// TODO: need to do a check in advance that its possible maybe not enough money
-		p.amount -= currencyreceive / p.poolpercentage // deduct the bought currency in percentage from all account wallets
-		mut walletusd0 := r.poolusd.wallets_pool[key] // add the usd coming in to all the usd accounts in same percentage
-		walletusd0.amount += usdneeded / p.poolpercentage
+	buyer_twallet.transaction('usd', -usdneeded)
+
+	for key, mut p in r.poolcur.wallets {
+		p.transaction(-currencyreceive / p.poolpercentage) // deduct the bought currency in percentage from all account wallets
+		mut walletusd0 := r.poolusd.wallets[key] // add the usd coming in to all the usd accounts in same percentage
+		walletusd0.transaction(usdneeded / p.poolpercentage)
 	}
 
 	r.poolusd.calculate()?
 	r.poolcur.calculate()?
 
-	return lp.buy_info(args)
+	// return lp.buy_info(args)
 }
 
-pub fn (mut dao DAO) pool_trade_sell(args PoolTradeArgs) ?TradeInfo {
-}
+// pub fn (mut dao DAO) pool_trade_sell(args PoolTradeArgs) ?TradeInfo {
+//}

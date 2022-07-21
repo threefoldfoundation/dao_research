@@ -206,7 +206,7 @@
 	usdprice_sell <span class="token builtin">f64</span>       <span class="token comment">// what value do we sell the currency in usd</span>
 	modtime       time<span class="token punctuation">.</span>Time <span class="token comment">// timestamp of last calculation</span>
 
-	wallets_pool    <span class="token builtin">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">&</span>LPWallet <span class="token comment">// money kept for an account in pool, they key is the public key of account</span>
+	wallets    <span class="token builtin">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">&</span>LPWallet <span class="token comment">// money kept for an account in pool, they key is the public key of account</span>
 	wallets_private <span class="token builtin">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">&</span>LPWallet <span class="token comment">// money kept for an account, not in pool, they key is the public key of account</span>
 <span class="token punctuation">}</span></code></pre>
 <p>dao pools are done per currency they group money on behalf of users in the DAO</p>

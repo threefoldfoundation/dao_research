@@ -3,7 +3,6 @@ module dao
 import time
 
 // asset = money stored in liqduitity pool, is owned by an account
-// is like your private wallet on top of your treasury
 [heap]
 pub struct LPWallet {
 pub mut:
@@ -13,4 +12,13 @@ pub mut:
 	modtime        time.Time
 	poolpercentage f64 // expressed in 0-100 as float
 	modified       bool = true
+}
+
+// updates wallet amounts and pool value
+// called when user deposits or withdraws
+fn (mut wallet LPWallet) transaction(amount f64) {
+	wallet.modified = true
+	wallet.amount += amount
+	wallet.amount_funded += amount
+	wallet.modtime = time.now()
 }
